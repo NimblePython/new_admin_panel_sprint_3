@@ -23,7 +23,7 @@ def backoff(start_sleep_time=0.1, factor=2, border_sleep_time=10):
     def func_wrapper(func):
         @wraps(func)
         def inner(*args, **kwargs):
-            print(f"Выполнение функции {func.__name__}")
+            # print(f"Выполнение функции {func.__name__}")
             n = 0
             while True:
                 try:

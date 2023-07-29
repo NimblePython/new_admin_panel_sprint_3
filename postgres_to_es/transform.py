@@ -8,8 +8,7 @@ from load import Load
 
 
 class Transform:
-
-    def prepare_and_push(self, data: list[FilmworkModel], from_disk=False):
+    def prepare_and_push(self, data: list[FilmworkModel], from_disk=False, chunk_size: int = 500):
         """
         # проверяем наличие данных в списке, если есть то передаем в Load
         # иначе читаем состояние из хранилища
@@ -17,12 +16,14 @@ class Transform:
         # если в файле актуальная дата, то грузим и передаем в Load
         :param data:
         :param from_disk:
+        :param chunk_size:
         :return :
         """
         if not data or from_disk:
             pass
 
         load_to_es = Load(data)
-        load_to_es.insert_films()
+        return load_to_es.insert_films(chunk_size)
+        # print("Indexed %d/%d documents" % (load_to_es.successes, load_to_es.docs_count))
 
-        return
+
