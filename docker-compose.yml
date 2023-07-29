@@ -1,0 +1,48 @@
+version: '3'
+services:
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    env_file:
+      - .env
+    volumes:
+      - ${HOME}/postgresql/data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DB_USER} -d ${DB_NAME}"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+
+  es:
+    image: elasticsearch:8.6.2
+    container_name: es
+    env_file:
+      - .env
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl http://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    ports:
+      - "9200:9200"
+
+  etl:
+    build: ./postgres_to_es
+    container_name: etl
+    restart: unless-stopped

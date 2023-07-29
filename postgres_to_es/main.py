@@ -48,14 +48,17 @@ if __name__ == '__main__':
     pg_db = os.environ.get("DB_NAME_PG")
     usr = os.environ.get("DB_USER")
     pwd = os.environ.get("DB_PASSWORD")
-    host = os.environ.get("HOST")
-    port = int(os.environ.get("PORT"))
+    pg_host = os.environ.get("PG_HOST")
+    pg_port = int(os.environ.get("PG_PORT"))
+    es_host = os.environ.get("ES_HOST")
+    es_port = int(os.environ.get("ES_PORT"))
 
-    dsl = {'dbname': pg_db, 'user': usr, 'password': pwd, 'host': host, 'port': port}
+    pg_dsl = {'dbname': pg_db, 'user': usr, 'password': pwd, 'host': pg_host, 'port': pg_port}
+    es_dsl = {'host': es_host, 'port': es_port}
 
     try:
-        with closing(connect_to_db(dsl)) as connection:
-            extract = extractor.Extractor(connection)
+        with closing(connect_to_db(pg_dsl)) as connection:
+            extract = extractor.Extractor(connection, es_dsl)
             extract.postgres_producer()
 
     except Exception as e:
