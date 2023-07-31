@@ -8,6 +8,7 @@ services:
       - .env
     volumes:
       - ${HOME}/postgresql/data:/var/lib/postgresql/data
+      - dump.sql:/docker-entrypoint-initdb.d/dump.sql:ro
     healthcheck:
       test:
         [
@@ -18,8 +19,6 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-    ports:
-      - "5432:5432"
 
   es:
     image: elasticsearch:8.6.2
@@ -39,8 +38,6 @@ services:
       timeout: 10s
       retries: 5
     restart: unless-stopped
-    ports:
-      - "9200:9200"
 
   etl:
     build: ./postgres_to_es

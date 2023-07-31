@@ -1,0 +1,139 @@
+{
+  "id":"0312ed51-8833-413f-bff5-0e139c11264a",
+  "title":"Star Wars: Episode V - The Empire Strikes Back",
+  "description":"Luke Skywalker, Han Solo, Princess Leia and Chewbacca face attack by the Imperial forces and its AT-AT walkers on the ice planet Hoth. While Han and Leia escape in the Millennium Falcon, Luke travels to Dagobah in search of Yoda. Only with the Jedi masters help will Luke survive when the dark side of the Force beckons him into the ultimate duel with Darth Vader.",
+  "rating":8.7,
+  "actors":[
+    {"id":"26e83050-29ef-4163-a99d-b546cac208f8","name":"Mark Hamill"},
+    {"id":"5b4bf1bc-3397-4e83-9b17-8b10c6544ed1","name":"Harrison Ford"},
+    {"id":"b5d2b63a-ed1f-4e46-8320-cf52a32be358","name":"Carrie Fisher"},
+    {"id":"efdd1787-8871-4aa9-b1d7-f68e55b913ed","name":"Billy Dee Williams"}
+  ],
+  "writers":[
+    {"id":"3217bc91-bcfc-44eb-a609-82d228115c50","name":"Lawrence Kasdan"},
+    {"id":"a5a8f573-3cee-4ccc-8a2b-91cb9f55250a","name":"George Lucas"},
+    {"id":"ed149438-4d76-45c9-861b-d3ed48ccbf0c","name":"Leigh Brackett"}
+  ],
+  "directors":[
+    {"id":"1989ed1e-0c0b-4872-9dfb-f5ed13c764e2","name":"Irvin Kershner"}
+  ],
+  "genres":[
+    {"name":"Action"},
+    {"name":"Adventure"},
+    {"name":"Fantasy"},
+    {"name":"Sci-Fi"}
+  ],
+  "directors_names":"Irvin Kershner",
+  "writers_names":"Lawrence Kasdan, George Lucas, Leigh Brackett",
+  "actors_names":"Mark Hamill, Harrison Ford, Carrie Fisher, Billy Dee Williams"
+}
+
+// Создание индекса
+{
+  "settings": {
+    "refresh_interval": "1s",
+    "analysis": {
+      "filter": {
+        "english_stop": {
+          "type": "stop",
+          "stopwords": "_english_"
+        },
+        "english_stemmer": {
+          "type": "stemmer",
+          "language": "english"
+        },
+        "english_possessive_stemmer": {
+          "type": "stemmer",
+          "language": "possessive_english"
+        },
+        "russian_stop": {
+          "type": "stop",
+          "stopwords": "_russian_"
+        },
+        "russian_stemmer": {
+          "type": "stemmer",
+          "language": "russian"
+        }
+      },
+      "analyzer": {
+        "ru_en": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "english_stop",
+            "english_stemmer",
+            "english_possessive_stemmer",
+            "russian_stop",
+            "russian_stemmer"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "imdb_rating": {
+        "type": "float"
+      },
+      "genre": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "ru_en",
+        "fields": {
+          "raw": {
+            "type":  "keyword"
+          }
+        }
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "ru_en"
+      },
+      "director": {
+        "type": "text",
+        "analyzer": "ru_en"
+      },
+      "actors_names": {
+        "type": "text",
+        "analyzer": "ru_en"
+      },
+      "writers_names": {
+        "type": "text",
+        "analyzer": "ru_en"
+      },
+      "actors": {
+        "type": "nested",
+        "dynamic": "strict",
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "name": {
+            "type": "text",
+            "analyzer": "ru_en"
+          }
+        }
+      },
+      "writers": {
+        "type": "nested",
+        "dynamic": "strict",
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "name": {
+            "type": "text",
+            "analyzer": "ru_en"
+          }
+        }
+      }
+    }
+  }
+}
+

@@ -6,6 +6,7 @@ ES содержит эту же информацию для обеспечени
 import psycopg2
 import os
 import extractor
+import logging
 
 from dotenv import load_dotenv, find_dotenv
 from contextlib import closing
@@ -39,19 +40,16 @@ def connect_to_db(params):
 
 
 if __name__ == '__main__':
-    """ Состояния которые могут быть:
-        - Последнее проверенное время
-        - Незавершенная транзакция
-        - Всё ок
-    """
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(levelname)s %(message)s')
 
-    pg_db = os.environ.get("DB_NAME_PG")
-    usr = os.environ.get("DB_USER")
-    pwd = os.environ.get("DB_PASSWORD")
-    pg_host = os.environ.get("PG_HOST")
-    pg_port = int(os.environ.get("PG_PORT"))
-    es_host = os.environ.get("ES_HOST")
-    es_port = int(os.environ.get("ES_PORT"))
+    pg_db = os.environ.get('DB_NAME_PG')
+    usr = os.environ.get('DB_USER')
+    pwd = os.environ.get('DB_PASSWORD')
+    pg_host = os.environ.get('PG_HOST')
+    pg_port = int(os.environ.get('PG_PORT'))
+    es_host = os.environ.get('ES_HOST')
+    es_port = int(os.environ.get('ES_PORT'))
 
     pg_dsl = {'dbname': pg_db, 'user': usr, 'password': pwd, 'host': pg_host, 'port': pg_port}
     es_dsl = {'host': es_host, 'port': es_port}

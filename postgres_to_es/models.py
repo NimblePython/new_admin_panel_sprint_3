@@ -3,6 +3,14 @@ import uuid
 from pydantic import BaseModel, Field
 from datetime import datetime, date
 from typing import Optional
+from dataclasses import dataclass, field
+
+
+@dataclass
+class Schema:
+    table: str
+    key: str
+    modified: str
 
 
 class PersonModel(BaseModel):

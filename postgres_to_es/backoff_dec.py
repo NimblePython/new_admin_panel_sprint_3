@@ -3,6 +3,7 @@
 вызовами декорируемой функции.
 """
 import time
+import logging
 
 from functools import wraps
 
@@ -23,18 +24,18 @@ def backoff(start_sleep_time=0.1, factor=2, border_sleep_time=10):
     def func_wrapper(func):
         @wraps(func)
         def inner(*args, **kwargs):
-            # print(f"Выполнение функции {func.__name__}")
+            logging.debug(f"Выполнение функции {func.__name__}")
             n = 0
             while True:
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
-                    print(f"Ошибка выполнении функции {func.__name__}")
+                    logging.warning(f"Ошибка выполнения функции {func.__name__}")
                     n += 1
                     t = start_sleep_time * factor**n
                     if t >= border_sleep_time:
                         t = border_sleep_time
-                    print(f"Пауза до следующего выполнения функции: {t} сек")
+                    logging.debug(f"Пауза до следующего выполнения функции: {t} сек")
                     time.sleep(t)
         return inner
 

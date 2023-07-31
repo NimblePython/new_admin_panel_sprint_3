@@ -1,9 +1,11 @@
+import logging
 import requests
 
 from elasticsearch import Elasticsearch
-from elasticsearch.helpers import bulk, streaming_bulk
+from elasticsearch.helpers import streaming_bulk
 from backoff_dec import backoff
 from models import FilmworkModel
+from http import HTTPStatus
 
 
 class Load:
@@ -86,7 +88,7 @@ class Load:
     def check_index(self):
         url = self.es_socket + 'movies/_mapping'
         message = requests.get(url)
-        if message.status_code == 404:
+        if message.status_code == HTTPStatus.NOT_FOUND:
             return False
         return True
 
@@ -96,7 +98,6 @@ class Load:
             doc['_id'] = record.id
             doc['_index'] = 'movies'
             doc['_source'] = record.model_dump_json()
-            # print(record.updated_at)
             yield doc
 
     @backoff()
@@ -115,10 +116,8 @@ class Load:
                                          index='movies',
                                          actions=self.get_data(),
                                          chunk_size=chunk_size):
-            # print('Try to insert to ES')
-            if ok:
-                pass
-                # print(">>> Сохранен в ES фильм: ", action['index']['_id'])
             successful_records += ok
+
+        logging.info(f'Записано/обновлено записей в ElasticSearch: {successful_records}')
 
         return successful_records
